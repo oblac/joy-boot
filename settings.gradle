@@ -1,0 +1,6 @@
+enableFeaturePreview('STABLE_PUBLISHING')
+
+include 'server'
+include 'joy-boot-tomcat8'
+include 'joy-boot-jetty9'
+include 'example'

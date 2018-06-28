@@ -1,0 +1,145 @@
+// Copyright (c) 2003-present, Jodd Team (http://jodd.org)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+description = '''
+	Joy Bootstrap
+'''
+
+//version = '0.2.0-' + date()
+version = '0.1.0'
+
+// --- properties -------------------------------------------------------------
+
+ext {
+	gradleScriptDir = "${rootProject.projectDir}/gradle"
+
+	commonManifest = [
+		'Debug-Info' : 'on',
+		'Built-By' : 'jodd.org',
+		'Bundle-License' : 'https://jodd.org/license.html',
+		'Bundle-Vendor' : 'Jodd',
+		'Bundle-DocURL' : 'https://jodd.org',
+		'Implementation-Version': version,
+		'Implementation-Vendor': 'Jodd Team'
+	]
+}
+
+// --- modules sets -----------------------------------------------------------
+
+allprojects {
+	version = rootProject.version
+
+	ext.isRelease = !version.contains("-")
+	ext.isSnapshot = !ext.isRelease
+	ext.isSubproject = project.parent != null
+	ext.isAdminRelease = ext.isRelease && project.hasProperty('JODD_ADMIN')
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+}
+
+// --- configuration ----------------------------------------------------------
+
+def javaModules() {
+	subprojects.findAll {
+		it.name.contains('boot') ||
+		it.name.contains('server')
+	}
+}
+
+configure(javaModules()) {
+	apply plugin: 'java'
+	apply plugin: 'signing'
+	apply plugin: 'maven-publish'
+	apply plugin: 'idea'
+	apply plugin: 'eclipse'
+	apply from: "${gradleScriptDir}/publish-maven.gradle"
+
+	group = 'org.jodd'
+
+	// compile
+
+	compileJava {
+		sourceCompatibility = '1.8'
+		targetCompatibility = '1.8'
+	}
+
+	if (JavaVersion.current() < JavaVersion.VERSION_1_8) {
+		throw new GradleException("This build must be run with at least Java 8.")
+	}
+
+	tasks.withType(JavaCompile) {
+		options.encoding = 'UTF-8'
+		options.compilerArgs << "-Xlint:-options"
+//		options.compilerArgs << "-Xlint:unchecked"
+		options.compilerArgs << "-Xlint:deprecation"
+		options.incremental = true
+		options.fork = true
+	}
+	compileJava.options.debug = true
+	compileJava.options.fork = true
+
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+	artifacts {
+		archives jar
+		archives sourcesJar
+		archives javadocJar
+	}
+}
+
+// --- release ----------------------------------------------------------------
+
+task version() {
+	println "-----------------"
+	println " Joy Bootstrap ${version}\n"
+	if (isSnapshot) println " snapshot: true"
+	if (isRelease) println " release: true"
+	println " java: v" + JavaVersion.current()
+	println " date: " + date()
+	println "-----------------"
+}
+
+// --- util -------------------------------------------------------------------
+
+def date() {
+	def date = new Date()
+	def formattedDate = date.format('yyyyMMdd')
+	return formattedDate
+}
+
+// --- wrapper ----------------------------------------------------------------
+
+wrapper {
+	gradleVersion = '4.8.1'
+}

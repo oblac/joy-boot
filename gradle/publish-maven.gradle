@@ -1,0 +1,102 @@
+// Copyright (c) 2003-present, Jodd Team (http://jodd.org)
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+signing {
+	required { isAdminRelease }
+	sign publishing.publications
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			afterEvaluate {
+				artifact sourcesJar
+				artifact javadocJar
+			}
+
+			customizePom(pom, project)
+		}
+	}
+	repositories {
+		maven {
+			url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+			if (isAdminRelease) {
+				credentials {
+					username sonatypeUsername
+					password sonatypePassword
+				}
+			}
+		}
+	}
+}
+
+task install(dependsOn: publishToMavenLocal) {
+	group = 'Publishing'
+	description = 'Installs artifacts to local Maven repository'
+}
+
+def customizePom(pom, gradleProject) {
+	pom.withXml {
+		def root = asNode()
+
+		// add all items necessary for maven central publication
+		root.children().last() + {
+			resolveStrategy = Closure.DELEGATE_FIRST
+
+			name gradleProject.moduleName
+			description gradleProject.moduleDescription
+			url 'http://jodd.org'
+			organization {
+				name 'Jodd'
+				url 'http://jodd.org'
+			}
+			issueManagement {
+				system 'GitHub'
+				url 'https://github.com/oblac/joy-bootstrap/issues'
+			}
+			licenses {
+				license {
+					name 'The BSD 2-Clause License'
+					url 'http://jodd.org/license.html'
+					distribution 'repo'
+				}
+			}
+			scm {
+				url 'https://github.com/oblac/joy-bootstrap'
+				connection 'scm:git:git://github.com/oblac/joy-bootstrap.git'
+				developerConnection 'scm:git:ssh://git@github.com/oblac/joy-bootstrap.git'
+			}
+			developers {
+				developer {
+					id 'igor'
+					name 'Igor Spasić'
+					email 'igor@jodd.org'
+					timezone  '+1'
+				}
+			}
+		}
+	}
+}
