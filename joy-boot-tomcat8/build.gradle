@@ -1,0 +1,22 @@
+
+ext.moduleName = 'Jodd Joy Bootstrap for Tomcat 8.5.x'
+ext.moduleDescription = 'Jodd Joy Bootstrap for Tomcat 8.5.x'
+
+ext {
+    tomcatVersion = '[8.5,9)'
+
+    tomcat_embed =	[
+            "org.apache.tomcat:tomcat-jasper:${tomcatVersion}",
+            "org.apache.tomcat:tomcat-jasper-el:${tomcatVersion}",
+            "org.apache.tomcat:tomcat-catalina:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-log4j:${tomcatVersion}"
+    ]
+}
+
+dependencies {
+    compile project(':server')
+    compile tomcat_embed
+}

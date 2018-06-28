@@ -1,0 +1,21 @@
+
+ext.moduleName = 'Jodd Joy Bootstrap for Jetty 9.x'
+ext.moduleDescription = 'Jodd Joy Bootstrap for Jetty 9.x'
+
+ext {
+    jettyVersion = '[9, 10)'
+
+    jetty_embed =	[
+            "org.eclipse.jetty:jetty-server:${jettyVersion}",
+            "org.eclipse.jetty:jetty-annotations:${jettyVersion}",
+            "org.eclipse.jetty:jetty-webapp:${jettyVersion}",
+            "org.eclipse.jetty:apache-jsp:${jettyVersion}",
+            "org.eclipse.jetty:apache-jstl:${jettyVersion}"
+//            "org.eclipse.jetty:jetty-jsp:${jettyVersion}"
+    ]
+}
+
+dependencies {
+    compile project(':server')
+    compile jetty_embed
+}
