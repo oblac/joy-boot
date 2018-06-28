@@ -1,0 +1,7 @@
+
+apply plugin: 'java'
+
+dependencies {
+//    compile project(":joy-boot-tomcat8")
+    compile project(":joy-boot-jetty9")
+}
