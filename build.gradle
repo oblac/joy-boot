@@ -57,7 +57,6 @@ allprojects {
 	ext.isAdminRelease = ext.isRelease && project.hasProperty('JODD_ADMIN')
 
 	repositories {
-		mavenLocal()
 		mavenCentral()
 	}
 }
