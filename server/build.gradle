@@ -2,5 +2,5 @@ ext.moduleName = 'Jodd Joy Bootstrap Server'
 ext.moduleDescription = 'Jodd Joy Bootstrap Server'
 
 dependencies {
-    compile "org.jodd:jodd-joy:5.0.2+"
+    compile "org.jodd:jodd-joy:[5.0.2,6)"
 }

@@ -1,7 +1,10 @@
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 dependencies {
 //    compile project(":joy-boot-tomcat8")
     compile project(":joy-boot-jetty9")
 }
+
+mainClassName = "jodd.joy.server.example.Runner"
