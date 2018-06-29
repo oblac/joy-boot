@@ -32,6 +32,8 @@ version = '0.1.0'
 
 // --- properties -------------------------------------------------------------
 
+ext.joddVersion = '[5.0.2,6)'
+
 ext {
 	gradleScriptDir = "${rootProject.projectDir}/gradle"
 
@@ -65,8 +67,7 @@ allprojects {
 
 def javaModules() {
 	subprojects.findAll {
-		it.name.contains('boot') ||
-		it.name.contains('server')
+		it.name.contains('boot')
 	}
 }
 

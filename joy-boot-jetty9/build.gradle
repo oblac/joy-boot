@@ -15,7 +15,15 @@ ext {
     ]
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs '../server/src/main/java'
+        }
+    }
+}
+
 dependencies {
-    compile project(':server')
+    compile "org.jodd:jodd-joy:${joddVersion}"
     compile jetty_embed
 }
