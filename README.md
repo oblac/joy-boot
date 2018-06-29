@@ -1,4 +1,4 @@
-# Joy Boot
+# Joy Boot 0.1.0
 
 Boostrap for Jodd Joy web applications.
 
@@ -13,3 +13,13 @@ The `server` folder is a common source folder for all the artifacts. It contains
 Apart from that, everything else is default.
 
 Enjoy!
+
+## Artifacts
+
+```
+org.jodd:joy-boot-tomcat8:0.1.0
+```
+
+```
+org.jodd:joy-boot-jetty9:0.1.0
+```
