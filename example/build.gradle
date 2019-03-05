@@ -3,7 +3,10 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 dependencies {
-    compile project(":joy-boot-tomcat8")
+    compile "org.jodd:joy-boot-tomcat8:0.1.0"
+    compile "org.jodd:jodd-joy:5.0.9"
+    
+//    compile project(":joy-boot-tomcat8")
 //    compile project(":joy-boot-jetty9")
 }
 
