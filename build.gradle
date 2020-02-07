@@ -99,9 +99,8 @@ configure(javaModules()) {
 		options.compilerArgs << "-Xlint:deprecation"
 		options.incremental = true
 		options.fork = true
+		options.debug = true
 	}
-	compileJava.options.debug = true
-	compileJava.options.fork = true
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
